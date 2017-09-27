@@ -6,6 +6,7 @@
 
 // some common .h files every .cpp needs
 #pragma once
+#pragma warning(disable:4996) 
 
 #include <windows.h>
 #include <stdio.h>   // for printf ...
