@@ -73,6 +73,8 @@ void MySocket::winsock_test(string url)
 	string recv_string = "";
 	// call Receive(recv_string), which invokes recv() in a loop
 	Receive(recv_string);
+
+	cout << "\n recive file: \n" << recv_string << endl;
 	// print reply on the screen: 
 
 }
@@ -113,4 +115,5 @@ bool MySocket::Receive(string & recv_string)
 		}
 	} while (bytes > 0); // end of do-while 
 		return true;
+
 }

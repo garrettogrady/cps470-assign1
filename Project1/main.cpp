@@ -32,7 +32,10 @@ UINT CrawlerFunction(LPVOID pParam) {
 	CrawlerParameters *p = ((CrawlerParameters*)pParam);
 	//MySocket s;
 	string url = "";
+
 	ofstream fout;
+	fout.open("crawldata.txt");
+
 	WSADATA wsaData;
 	//Initialize WinSock; once per program run
 	WORD wVersionRequested = MAKEWORD(2, 2);
@@ -63,7 +66,7 @@ UINT CrawlerFunction(LPVOID pParam) {
 				p->H++;
 				p->Hash.insert(std::make_pair(url, true));
 				MySocket s;
-				s.winsock_test(url, pParam);
+				s.winsock_test(url);
 				fout << url << endl;
 			}
 		}
@@ -107,10 +110,12 @@ int main(int argc, const char* argv[])
 	cp.mutex = CreateMutex(NULL, 0, NULL);
 	cp.eventQuit = CreateEvent(NULL, false, false, NULL);
 
-	HANDLE aThread[10];
+	HANDLE aThread[100];
 
-	for (int i = 0; i < 10; i++) {
+	for (int i = 0; i < 100; i++) {
+		printf(":%d thread");
 		aThread[i] = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)CrawlerFunction, &cp, 0, NULL);
+
 	}
 
 	fin.close(); fout.close();
