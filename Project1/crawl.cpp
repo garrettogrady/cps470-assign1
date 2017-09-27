@@ -11,11 +11,7 @@ void MySocket::winsock_test(string url)
 	int port = 80;
 
 	// for debugging purpose, print host, path, port, query on screen to see if they are correct
-	cout << "URL: " << url << endl;
-	cout << "host: " << host << endl;
-	cout << "port: " << port << endl;
-	cout << "path: " << path << endl;
-	cout << "query: " << query << endl;
+
 
 	// open a TCP socket
 	sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
@@ -67,16 +63,42 @@ void MySocket::winsock_test(string url)
 	// send GET request to host
 	const int reqlen = 80;
 
-	char *ask = "GET / HTTP/1.0\nHost: www.google.com\n\n";
+	string temps = "HEAD / HTTP/1.0\nHost: " + url + "\n\n";
+	char *ask = new char[temps.size()];
+	copy(temps.begin(), temps.end(), ask);
+	ask[temps.size()] = '\0';
+
 	send(sock, ask, reqlen, 0);
 
 	string recv_string = "";
 	// call Receive(recv_string), which invokes recv() in a loop
 	Receive(recv_string);
 
-	cout << "\n recive file: \n" << recv_string << endl;
-	// print reply on the screen: 
+	int space = recv_string.find(" ");
+	recv_string = recv_string.substr(space + 1, 3);
 
+	cout << "\n recive file: " << recv_string + url << endl;
+	// print reply on the screen: 
+	if(stoi(recv_string) >= 400) {
+		temps = "GET / HTTP/1.0\nHost: " + url + "\n\n";
+		char *asks = new char[temps.size()];
+		copy(temps.begin(), temps.end(), asks);
+		asks[temps.size()] = '\0';
+
+		send(sock, asks, reqlen, 0);
+
+		recv_string = "";
+		// call Receive(recv_string), which invokes recv() in a loop
+		Receive(recv_string);
+		
+		//cout << "\n recive file: \n" << recv_string << endl;
+		// print reply on the screen: 
+		cout << "URL: " << url << endl;
+		cout << "host: " << host << endl;
+		cout << "port: " << port << endl;
+		cout << "path: " << path << endl;
+		cout << "query: " << query << endl;
+	}
 }
 
 // This function receives reply from remote server.
